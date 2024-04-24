@@ -22,4 +22,3 @@ save/load !!!
 
 
 6. Jedna zaproponowane przez grupę -- ...
-====================
