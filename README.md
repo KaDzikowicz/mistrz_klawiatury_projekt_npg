@@ -3,26 +3,21 @@ Gra polega na jak najszybszym napisaniu wyrazów pojawiających się na ekranie.
 
 interfejs użytkownika - TUI
 
-Funkcjonalności (Do poprawy, trochę mało zrozumiałe):
+Funkcjonalności:
 ====================
 1. Baza haseł z poziomami łatwy, średni, trudny co najmniej 25 w każdym.
 2. Tryb nauki i wyzwania.
-  -poziom trudności
-  -difficult level -> Beginner/Easy/Medium/Hard
-  -każdy lvl ma własne bazy słów (25)
-
 3. Implementacja zasad gry.
-  -timer
-  -wordcheck
-  -start
-  -stop(Nauka)
-  -change level 
-  -save/load !!!
+4. Statystyka wygranych.
+5. Zapis/odczyt stanu gry.
+6. Jedna zaproponowane przez grupę.
+====================
 
-5.  Statystyka wygranych.
-
-6.  Zapis/odczyt stanu gry.
-  User(stats, game)
-
-
-7. Jedna zaproponowane przez grupę -- ...
+Implementacja:
+====================
+- Klasa **MistrzKLawiatury**: przechowuje bazę haseł dla poziomów trudności, wybrany poziom, liczbę podjętych gier/prób, liczbę wygranych gier/prób
+- funkcja _wybierz_poziom_: przydziela poziom w zależności od wyboru gracza
+- funkcja _wylosuj_haslo_: potrzebna do poziomu wyzwania, losuje hasło z bazy haseł
+- funkcja _graj_: podaje graczowi hasła i weryfikuje poprawność wpisanego przez gracza słowa
+- funkcja _statystyki_: zwraca liczbę podjętych oraz wygranych gier/prób
+====================
