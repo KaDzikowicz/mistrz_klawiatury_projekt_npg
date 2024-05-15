@@ -3,7 +3,7 @@ Gra polega na jak najszybszym napisaniu wyrazów pojawiających się na ekranie.
 
 interfejs użytkownika - TUI
 
-Funkcjonalności:
+Funkcjonalności (Do poprawy, trochę mało zrozumiałe):
 ====================
 1. Baza haseł z poziomami łatwy, średni, trudny co najmniej 25 w każdym.
 2. Tryb nauki i wyzwania.
