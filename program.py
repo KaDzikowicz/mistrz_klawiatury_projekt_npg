@@ -49,3 +49,9 @@ def wybierz_poziom(self):
             print("Tryb wyzwania został wybrany. Musisz napisać 10 haseł.")
             self.baza_hasel['wyzwanie'] = random.sample(self.baza_hasel['łatwy'] + self.baza_hasel['średni'] + self.baza_hasel['trudny'], 10)
             self.start_time = time.time()
+
+    def wylosuj_haslo(self):
+        if self.poziom == 'wyzwanie':
+            return random.choice(self.baza_hasel['wyzwanie'])
+        else:
+            return random.choice(self.baza_hasel[self.poziom])
