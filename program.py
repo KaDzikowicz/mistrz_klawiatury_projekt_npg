@@ -1,5 +1,7 @@
+import keyboard
 import random
 import time
+import sys 
 import os
 
 class MistrzKlawiatury:
@@ -23,10 +25,11 @@ class MistrzKlawiatury:
         }
         self.poziom = None
 
-def wybierz_poziom(self):
+    def wybierz_poziom(self):
+        os.system('cls')  # czyszczenie konsoli
         print("Wybierz tryb: nauka, wyzwanie")
         tryb = input().lower()  # wybór trybu
-        os.system('cls')  # czyszczenie konsoli
+        os.system('cls')
 
         if tryb == 'nauka':
             print("Wybrano tryb nauka!")
@@ -55,3 +58,41 @@ def wybierz_poziom(self):
             return random.choice(self.baza_hasel['wyzwanie'])
         else:
             return random.choice(self.baza_hasel[self.poziom])
+    
+    #TODO: Funkcja graj:
+    def graj(self):
+
+        #placeholder
+        self.wybierz_poziom()
+        print(self.wylosuj_haslo())
+        
+
+        #dodanie podstawowego timera, praca w toku
+        q = 0
+
+        self.start_time = time.time()
+        input_buffer = ""
+
+        while(q < 50):
+            
+            keyboard.start_recording()
+            self.displayed_time = time.time() - self.start_time
+
+            os.system('cls')
+            sys.stdout.write("Twój czas: {0:.1f} {1}".format(self.displayed_time, input_buffer))
+            sys.stdout.flush() 
+            
+            while(time.time() - self.start_time - self.displayed_time < 0.1):
+                
+                pass
+            
+            list_buffer = keyboard.stop_recording()
+
+            for events in list_buffer:
+                input_buffer += str(events)
+
+            q += 1
+        
+
+if __name__ == "__main__":
+    MistrzKlawiatury().graj()
