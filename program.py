@@ -1,11 +1,18 @@
-import keyboard
+#import keyboard
+from pynput.keyboard import Key, Listener, Controller
 import random
 import time
 import sys 
 import os
 
+REFRESH_RATE = 0.05 #predkosc odswiezania
+
 class MistrzKlawiatury:
     def __init__(self):
+        self.user_input = "" #łańcuch znaków wpisanych przez uzytkownika
+        self.key_pressed = None
+        self.cleanInput = False #czyszczenie wejscia, jesli uzywasz funkcji input() ta zmienna MUSI byc false
+
         self.baza_hasel = {
             'debug': ["jabłka", "orzechy"],  # tryb testowy
             'łatwy': ['pies', 'kot', 'dom', 'auto', 'drzewo', 'jabłko', 'słońce', 'krzesło', 'telefon', 'chleb',
@@ -26,9 +33,9 @@ class MistrzKlawiatury:
         self.poziom = None
 
     def wybierz_poziom(self):
-        os.system('cls')  # czyszczenie konsoli
+        os.system('cls')                        # czyszczenie konsoli
         print("Wybierz tryb: nauka, wyzwanie")
-        tryb = input().lower()  # wybór trybu
+        tryb = input().lower()                  # wybór trybu
         os.system('cls')
 
         if tryb == 'nauka':
@@ -58,41 +65,83 @@ class MistrzKlawiatury:
             return random.choice(self.baza_hasel['wyzwanie'])
         else:
             return random.choice(self.baza_hasel[self.poziom])
-    
-    #TODO: Funkcja graj:
-    def graj(self):
-
-        #placeholder
-        self.wybierz_poziom()
-        print(self.wylosuj_haslo())
         
-
-        #dodanie podstawowego timera, praca w toku
-        q = 0
-
-        self.start_time = time.time()
-        input_buffer = ""
-
-        while(q < 50):
+    def on_press(self, key) -> None:        #funkcja wykonuje sie po wcisnieciu klawisza, zwraca literke po wcisnieciu literki lub lancuch znakow Key.<nazwa klawisza> dla znaków specjalnych (np "Key.enter")
+        key = str(key)
+        if(len(key) == 3):
+            self.key_pressed = key[1]
             
-            keyboard.start_recording()
+            if self.cleanInput:
+                keyboard = Controller()
+                keyboard.press(Key.backspace)
+                keyboard.release(Key.backspace)
+
+        elif(key == "Key.backspace"):       #zapobieganie rekurencji
+            pass
+        else:
+            self.key_pressed = key
+
+        
+    
+    
+
+    def ask_question(self, question : str, with_timer : bool = True) -> str:
+        """Funkcja jest alternatywa funkcji input()
+
+        :param str question: lancuch znakow z pytaniem dla uzytkownika
+        :param bool with_timer: zmienna decydujaca czy wyswietlac czas
+        :return: wejscie uzytkownika
+        """
+        
+        self.cleanInput = True          #bez tego wyskakuje blad na koniec programu
+        self.start_time = time.time()
+        self.key_pressed = None         #potrzebne żeby przypadkiem nie wczytało entera z poprzedniej funkcji
+        while(self.key_pressed != "Key.enter"):
+            
             self.displayed_time = time.time() - self.start_time
 
+            if self.key_pressed != None:
+                if len(self.key_pressed) == 1:
+                    self.user_input += self.key_pressed
+                    self.key_pressed = None
+
+            #wyswietlanie
             os.system('cls')
-            sys.stdout.write("Twój czas: {0:.1f} {1}".format(self.displayed_time, input_buffer))
+            sys.stdout.write(question + "\n")
+            if with_timer:
+                sys.stdout.write("Twój czas: {0:.1f}\n".format(self.displayed_time))
+            sys.stdout.write(self.user_input)
             sys.stdout.flush() 
-            
-            while(time.time() - self.start_time - self.displayed_time < 0.1):
-                
-                pass
-            
-            list_buffer = keyboard.stop_recording()
 
-            for events in list_buffer:
-                input_buffer += str(events)
+            listener.join(REFRESH_RATE)
 
-            q += 1
+        self.cleanInput = False
+        return self.user_input
+
+
+
+    #TODO: Funkcja graj:
+    def graj(self):
+        #placeholder
+
+        self.wybierz_poziom()
+
+        #przykładowe użycie funkcji ask question:
+        tekst = self.ask_question(self.wylosuj_haslo())
+        print("\nwpisany tekst: " + tekst)
         
 
+        
+
+
+
+
 if __name__ == "__main__":
-    MistrzKlawiatury().graj()
+
+    # Collect events until released
+    gra = MistrzKlawiatury()
+
+    listener = Listener(on_press=gra.on_press)
+    listener.start()
+    gra.graj()
+    listener.stop()
