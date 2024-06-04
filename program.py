@@ -18,17 +18,17 @@ class MistrzKlawiatury:
             'łatwy': ['pies', 'kot', 'dom', 'auto', 'drzewo', 'jabłko', 'słońce', 'krzesło', 'telefon', 'chleb',
                       'woda', 'kawa', 'książka', 'kwiat', 'kawałek', 'ręka', 'noga', 'okno', 'telewizor', 'lampa',
                       'telefon', 'klawiatura', 'myszka', 'gra', 'film', 'muzyka', 'radio', 'piosenka', 'serce'],
-            'średni': ['komputer', 'programowanie', 'telewizja', 'książka', 'muzyka', 'universum', 'planeta',
+            'średni': ['komputer', 'programowanie', 'telewizja', 'książka', 'muzyka', 'uniwersum', 'planeta',
                        'galaktyka', 'kosmos', 'orbita', 'satelita', 'promień', 'neutron', 'elektron', 'proton',
-                       'jupiter', 'mars', 'wenus', 'saturn', 'uran', 'neptun', 'pluton', 'galaktyka', 'gwiazda',
+                       'jowisz', 'szczypiorek', 'żółć', 'saturn', 'pszczoła', 'neptun', 'pluton', 'galaktyka', 'gwiazda',
                        'teleskop', 'obserwatorium', 'teoria', 'przestrzeń', 'gwiazdozbiór'],
-            'trudny': ['elektroencefalograf', 'hippopotomonstrosesquippedaliophobia', 'antykonstytucyjny',
-                       'konstantynopolitańczykowianeczka', 'autostrada', 'hipopotam', 'elektrownia',
-                       'parametryzacja', 'podstawowonarodowoska', 'krzyżówka', 'pseudokibic', 'psychofizjologia',
-                       'przedstawicielstwo', 'przedstawicielski', 'psychoanalityk', 'sztucznojądrowy',
-                       'zainteresowaniom', 'niezawodnościowo', 'krzyżóweczka', 'bezwzględność', 'odporonośrodek',
-                       'pszenżytożercy', 'elektroenergetyczny', 'przedstawicielskie', 'słowiańszczyzna',
-                       'wytrzymałościowym', 'paradoksalizm', 'zastanawiający', 'przeanalizowanie']
+            'trudny': ['elektroencefalograf', 'niedopowiedzenie', 'antykonstytucyjny',
+                       'konstantynopolitańczykowianeczka', 'gżegżółka', 'nadprzyrodzoność', 'antydyskryminacyjny',
+                       'parametryzacja', 'wielopłaszczyznowość', 'samowystarczalność', 'polipropylenowy', 'psychofizjologia',
+                       'przedstawicielstwo', 'dezoksyrybonukleinowy', 'psychoanalityk', 'najnieprzyzwoitszy',
+                       'zainteresowaniom', 'niezawodnościowo', 'krzyżóweczka', 'bezwzględność', 'hipopotomonstroseskwipedaliofobia',
+                       'kontrrewolucjonista', 'elektroenergetyczny', 'umiędzynarodowienie', 'słowiańszczyzna',
+                       'wytrzymałościowym', 'paradoksalność', 'zastanawiający', 'przeanalizowanie']
         }
         self.poziom = None
 
