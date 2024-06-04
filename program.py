@@ -122,18 +122,31 @@ class MistrzKlawiatury:
 
     #TODO: Funkcja graj:
     def graj(self):
-        #placeholder
+        print("Witaj w grze Mistrz Klawiatury!")
+        while True:
+            self.wybierz_poziom()
+            hasla = self.baza_hasel[self.poziom] if self.poziom != 'wyzwanie' else self.baza_hasel['wyzwanie']
 
-        self.wybierz_poziom()
+            for haslo in hasla:
+                os.system('cls')
+                print("Twoje hasło to:", haslo)
+                print("Zacznij pisać:")
+                slowo = self.ask_question(haslo)
+                print("\nWpisany tekst: " + slowo)
+                while slowo != haslo:
+                    os.system('cls')
+                    print("Niepoprawne hasło. Spróbuj ponownie.")
+                    print("Twoje hasło to:", haslo)
 
-        #przykładowe użycie funkcji ask question:
-        tekst = self.ask_question(self.wylosuj_haslo())
-        print("\nwpisany tekst: " + tekst)
-        
+            #przykładowe użycie funkcji ask question:
+            #tekst = self.ask_question(self.wylosuj_haslo())
+            #print("\nwpisany tekst: " + tekst)
 
-        
-
-
+            print("Czy chcesz zagrać ponownie? (tak/nie)")
+            kontynuuj = input().lower()
+            os.system('cls')
+            if kontynuuj != 'tak':
+                break
 
 
 if __name__ == "__main__":
