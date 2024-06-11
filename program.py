@@ -147,6 +147,9 @@ class MistrzKlawiatury:
             os.system('cls')
             if kontynuuj != 'tak':
                 break
+    def statystyki(self):
+        print("Liczba prób:", self.liczba_prob)
+        print("Liczba wygranych gier:", self.liczba_poprawnych)
 
 
 if __name__ == "__main__":
