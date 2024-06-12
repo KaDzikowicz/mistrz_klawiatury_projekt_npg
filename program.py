@@ -5,13 +5,43 @@ import time
 import sys 
 import os
 
-REFRESH_RATE = 0.05 #predkosc odswiezania
+REFRESH_RATE = 0.01 #predkosc odswiezania
+
+
+def errorhandler(error_name):
+    print("Wystapil blad:")
+    print(error_name)
+    print("\nwcisnij dowolny klawisz aby kontynuowac")
+    kosz = input()
+    quit()
+
+#TODO: Zapis i odczyt gry
+class Zapis_Gry:
+    def __init__(self):
+        try:                                        #utwórz plik, jeśli jeszcze go nie ma
+            self.file = open("zapis.txt", "x")
+            self.file.close()
+        except:
+            pass
+        
+        try:                                        #sprawdz czy się udalo
+            self.file = open("zapis.txt", "r")
+            self.file.close()
+            self.blad = 0
+        except:
+            self.blad = 1
+
+    def zapis(self, poziom):
+        self.f = open("zapis.txt", "w")
+        self.f.write(str(poziom))
+        self.f.close
+
 
 class MistrzKlawiatury:
     def __init__(self):
-        self.user_input = "" #łańcuch znaków wpisanych przez uzytkownika
+        self.user_input = ""        #łańcuch znaków wpisanych przez uzytkownika
         self.key_pressed = None
-        self.cleanInput = False #czyszczenie wejscia, jesli uzywasz funkcji input() ta zmienna MUSI byc false
+        self.cleanInput = False     #czyszczenie wejscia, jesli uzywasz funkcji input() ta zmienna MUSI byc false
 
         self.baza_hasel = {
             'debug': ["jabłka", "orzechy"],  # tryb testowy
@@ -33,7 +63,7 @@ class MistrzKlawiatury:
         self.poziom = None
 
     def wybierz_poziom(self):
-        os.system('cls')                        # czyszczenie konsoli
+        #os.system('cls')                        # czyszczenie konsoli
         print("Wybierz tryb: nauka, wyzwanie")
         tryb = input().lower()                  # wybór trybu
         os.system('cls')
@@ -68,21 +98,28 @@ class MistrzKlawiatury:
         
     def on_press(self, key) -> None:        #funkcja wykonuje sie po wcisnieciu klawisza, zwraca literke po wcisnieciu literki lub lancuch znakow Key.<nazwa klawisza> dla znaków specjalnych (np "Key.enter")
         key = str(key)
+        
+
         if(len(key) == 3):
             self.key_pressed = key[1]
             
             if self.cleanInput:
+                self.cleanInput = True
                 keyboard = Controller()
                 keyboard.press(Key.backspace)
                 keyboard.release(Key.backspace)
+                self.cleanInput = False
 
-        elif(key == "Key.backspace"):       #zapobieganie rekurencji
+        elif(key == "Key.backspace"):       #zapobieganie rekurencji przy jednoczesnym zachowaniu funkcji backspace
+            if(self.cleanInput == False):
+                self.user_input = self.user_input[:-1]
             pass
         else:
             self.key_pressed = key
 
         
-    
+   
+
     def reset_timer(self):              #do resetowania timera :)
         self.start_time = time.time()
 
@@ -94,8 +131,9 @@ class MistrzKlawiatury:
         :return: wejscie uzytkownika
         """
         self.user_input = ""
-        self.cleanInput = True          #bez tego wyskakuje blad na koniec programu
         self.key_pressed = None         #potrzebne żeby przypadkiem nie wczytało entera z poprzedniej funkcji
+        os.system('cls')
+        sys.stdout.write(question+"\n\n")
         
         while(self.key_pressed != "Key.enter"):
             
@@ -107,22 +145,30 @@ class MistrzKlawiatury:
                     self.key_pressed = None
 
             #wyswietlanie
-            os.system('cls')
-            sys.stdout.write(question + "\n")
-            if with_timer:
-                sys.stdout.write("Twój czas: {0:.1f}\n".format(self.displayed_time))
-            sys.stdout.write(self.user_input)
-            sys.stdout.flush() 
+            sys.stdout.flush()
+            
+            sys.stdout.write("\033[0F\x1b[0K"+"Twój czas: {0:.1f}\n".format(self.displayed_time))
+            sys.stdout.write("\033[0K"+self.user_input)
+            
+            
 
             listener.join(REFRESH_RATE)
 
-        self.cleanInput = False
+        
         return self.user_input
 
 
 
     #TODO: Funkcja graj:
     def graj(self):
+        os.system('cls')
+        nowagra = Zapis_Gry()
+
+        if(nowagra.blad == 1):
+            errorhandler("zapis pliku nie powiodl sie")
+            
+
+
         exitflag = False
 
         print("Witaj w grze Mistrz Klawiatury!")
@@ -132,9 +178,12 @@ class MistrzKlawiatury:
 
             self.reset_timer()
 
-            for haslo in hasla:
+            for i, haslo in enumerate(hasla):
+                
+                nowagra.zapis(i)
+
                 slowo = self.ask_question("Twoje hasło to: " + haslo+"\nZacznij pisać:")
-                print("\nWpisany tekst: " + slowo)
+
                 while slowo != haslo:
                     slowo = self.ask_question("Niepoprawne hasło. Spróbuj ponownie.\n"+"Twoje hasło to: " + haslo+"\nZacznij pisać:")
 
@@ -158,10 +207,7 @@ class MistrzKlawiatury:
 
 
 if __name__ == "__main__":
-
-    # Collect events until released
     gra = MistrzKlawiatury()
-
     listener = Listener(on_press=gra.on_press)
     listener.start()
     gra.graj()
