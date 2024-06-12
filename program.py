@@ -83,7 +83,8 @@ class MistrzKlawiatury:
 
         
     
-    
+    def reset_timer(self):              #do resetowania timera :)
+        self.start_time = time.time()
 
     def ask_question(self, question : str, with_timer : bool = True) -> str:
         """Funkcja jest alternatywa funkcji input()
@@ -92,10 +93,10 @@ class MistrzKlawiatury:
         :param bool with_timer: zmienna decydujaca czy wyswietlac czas
         :return: wejscie uzytkownika
         """
-        
+        self.user_input = ""
         self.cleanInput = True          #bez tego wyskakuje blad na koniec programu
-        self.start_time = time.time()
         self.key_pressed = None         #potrzebne żeby przypadkiem nie wczytało entera z poprzedniej funkcji
+        
         while(self.key_pressed != "Key.enter"):
             
             self.displayed_time = time.time() - self.start_time
@@ -122,31 +123,35 @@ class MistrzKlawiatury:
 
     #TODO: Funkcja graj:
     def graj(self):
+        exitflag = False
+
         print("Witaj w grze Mistrz Klawiatury!")
-        while True:
+        while exitflag == False:
             self.wybierz_poziom()
             hasla = self.baza_hasel[self.poziom] if self.poziom != 'wyzwanie' else self.baza_hasel['wyzwanie']
 
+            self.reset_timer()
+
             for haslo in hasla:
-                os.system('cls')
-                print("Twoje hasło to:", haslo)
-                print("Zacznij pisać:")
-                slowo = self.ask_question(haslo)
+                slowo = self.ask_question("Twoje hasło to: " + haslo+"\nZacznij pisać:")
                 print("\nWpisany tekst: " + slowo)
                 while slowo != haslo:
-                    os.system('cls')
-                    print("Niepoprawne hasło. Spróbuj ponownie.")
-                    print("Twoje hasło to:", haslo)
+                    slowo = self.ask_question("Niepoprawne hasło. Spróbuj ponownie.\n"+"Twoje hasło to: " + haslo+"\nZacznij pisać:")
 
             #przykładowe użycie funkcji ask question:
             #tekst = self.ask_question(self.wylosuj_haslo())
             #print("\nwpisany tekst: " + tekst)
 
-            print("Czy chcesz zagrać ponownie? (tak/nie)")
-            kontynuuj = input().lower()
+            kontynuuj = ""
             os.system('cls')
-            if kontynuuj != 'tak':
-                break
+            while kontynuuj != "tak": 
+                print("Czy chcesz zagrać ponownie? (tak/nie)")
+                kontynuuj = input().lower()
+                os.system('cls')
+                if kontynuuj == 'nie':
+                    exitflag = True
+                    break
+
     def statystyki(self):
         print("Liczba prób:", self.liczba_prob)
         print("Liczba wygranych gier:", self.liczba_poprawnych)
