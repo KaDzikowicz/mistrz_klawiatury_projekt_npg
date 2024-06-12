@@ -22,6 +22,6 @@ Implementacja:
 - funkcja _statystyki_: zwraca liczbę podjętych oraz wygranych gier/prób
 ====================
 
-**Znane problemy:**
-**====================**
+Znane Problemy:
+====================
 - Aby zapis do pliku działał poprawnie wyłączenie antywirusa, w szczególności "automatycznej izolacji" może być konieczny 
