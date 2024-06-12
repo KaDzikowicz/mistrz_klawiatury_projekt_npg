@@ -193,14 +193,18 @@ class MistrzKlawiatury:
             hasla = self.baza_hasel[self.poziom] if self.poziom != 'wyzwanie' else self.baza_hasel['wyzwanie']
 
             self.reset_timer()
-
+            liczba_prob=0
             for i, haslo in enumerate(hasla):
+                
+                
                 
                 nowagra.zapis(i, self.timer_now(), 0, 0)
 
                 slowo = self.ask_question("Twoje hasło to: " + haslo + "\nZacznij pisać:")
+                liczba_prob+=1
 
                 while slowo != haslo:
+                    liczba_prob+=1
                     slowo = self.ask_question("Niepoprawne hasło. Spróbuj ponownie.\n"+"Twoje hasło to: " + haslo+"\nZacznij pisać:")
             
 
@@ -212,6 +216,8 @@ class MistrzKlawiatury:
             nowagra.zapis(0, ostateczny_czas, "nie", "nie")
 
             while kontynuuj != "tak": 
+                print(f"Czas: {ostateczny_czas:.2f}")
+                print("Liczba prób:",liczba_prob)
                 print("Czy chcesz zagrać ponownie? (tak/nie)")
                 kontynuuj = input().lower()
                 os.system('cls')
