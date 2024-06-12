@@ -31,16 +31,21 @@ class Zapis_Gry:
         except:
             self.blad = 1
 
-    def zapis(self, poziom, czas) -> None:
+    def zapis(self, poziom, czas, tryb, trudnosc) -> None:
         self.f = open("zapis.txt", "w")
-        self.f.write(str(poziom) + str(czas))
-        self.f.close
+        self.f.write(str(poziom) + "\n" + str(czas) + "\n" + str(tryb) + "\n" + str(trudnosc))
+        self.f.close()
     
     def odczyt(self) -> str:
         self.f = open("zapis.txt", "r")
-        odczyt = self.f.read()
-        self.f.close
-        return odczyt
+        poziom = int(self.f.readline())
+        czas = float(self.f.readline())
+        tryb = self.f.readline()
+        trudnosc = self.f.readline()
+
+        self.f.close()
+
+        return poziom, czas, tryb, trudnosc
 
 
 class MistrzKlawiatury:
@@ -161,7 +166,6 @@ class MistrzKlawiatury:
 
             listener.join(REFRESH_RATE)
 
-        
         return self.user_input
 
 
@@ -178,7 +182,7 @@ class MistrzKlawiatury:
 
         print("Witaj w grze Mistrz Klawiatury!")
         while exitflag == False:
-            if(nowagra.odczyt() != 0):
+            if(nowagra.odczyt()[0] != 0):
                 os.system('cls')
                 wejscie = input("Wykryto niedokończoną grę, czy chcesz ją wczytać? (tak/nie)")
                 if wejscie == "tak":
@@ -192,7 +196,7 @@ class MistrzKlawiatury:
 
             for i, haslo in enumerate(hasla):
                 
-                nowagra.zapis(i, self.timer_now())
+                nowagra.zapis(i, self.timer_now(), 0, 0)
 
                 slowo = self.ask_question("Twoje hasło to: " + haslo + "\nZacznij pisać:")
 
@@ -204,6 +208,9 @@ class MistrzKlawiatury:
 
             kontynuuj = ""
             os.system('cls')
+
+            nowagra.zapis(0, ostateczny_czas, "nie", "nie")
+
             while kontynuuj != "tak": 
                 print("Czy chcesz zagrać ponownie? (tak/nie)")
                 kontynuuj = input().lower()
