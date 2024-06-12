@@ -17,7 +17,7 @@ def errorhandler(error_name):
 
 #TODO: Zapis i odczyt gry
 class Zapis_Gry:
-    def __init__(self):
+    def __init__(self) ->None:
         try:                                        #utwórz plik, jeśli jeszcze go nie ma
             self.file = open("zapis.txt", "x")
             self.file.close()
@@ -31,10 +31,16 @@ class Zapis_Gry:
         except:
             self.blad = 1
 
-    def zapis(self, poziom):
+    def zapis(self, poziom, czas) -> None:
         self.f = open("zapis.txt", "w")
-        self.f.write(str(poziom))
+        self.f.write(str(poziom) + str(czas))
         self.f.close
+    
+    def odczyt(self) -> str:
+        self.f = open("zapis.txt", "r")
+        odczyt = self.f.read()
+        self.f.close
+        return odczyt
 
 
 class MistrzKlawiatury:
@@ -63,7 +69,6 @@ class MistrzKlawiatury:
         self.poziom = None
 
     def wybierz_poziom(self):
-        #os.system('cls')                        # czyszczenie konsoli
         print("Wybierz tryb: nauka, wyzwanie")
         tryb = input().lower()                  # wybór trybu
         os.system('cls')
@@ -122,12 +127,14 @@ class MistrzKlawiatury:
 
     def reset_timer(self):              #do resetowania timera :)
         self.start_time = time.time()
+    
+    def timer_now(self):
+        return time.time() - self.start_time
 
-    def ask_question(self, question : str, with_timer : bool = True) -> str:
+    def ask_question(self, question : str) -> str:
         """Funkcja jest alternatywa funkcji input()
 
         :param str question: lancuch znakow z pytaniem dla uzytkownika
-        :param bool with_timer: zmienna decydujaca czy wyswietlac czas
         :return: wejscie uzytkownika
         """
         self.user_input = ""
@@ -137,7 +144,7 @@ class MistrzKlawiatury:
         
         while(self.key_pressed != "Key.enter"):
             
-            self.displayed_time = time.time() - self.start_time
+            
 
             if self.key_pressed != None:
                 if len(self.key_pressed) == 1:
@@ -147,7 +154,7 @@ class MistrzKlawiatury:
             #wyswietlanie
             sys.stdout.flush()
             
-            sys.stdout.write("\033[0F\x1b[0K"+"Twój czas: {0:.1f}\n".format(self.displayed_time))
+            sys.stdout.write("\033[0F\x1b[0K"+"Twój czas: {0:.1f}\n".format(self.timer_now())) #Bawienie się kursorem żeby nie było "mrugania"
             sys.stdout.write("\033[0K"+self.user_input)
             
             
@@ -167,29 +174,33 @@ class MistrzKlawiatury:
         if(nowagra.blad == 1):
             errorhandler("zapis pliku nie powiodl sie")
             
-
-
         exitflag = False
 
         print("Witaj w grze Mistrz Klawiatury!")
         while exitflag == False:
-            self.wybierz_poziom()
+            if(nowagra.odczyt() != 0):
+                os.system('cls')
+                wejscie = input("Wykryto niedokończoną grę, czy chcesz ją wczytać? (tak/nie)")
+                if wejscie == "tak":
+                    pass
+                else:
+                    self.wybierz_poziom()
+
             hasla = self.baza_hasel[self.poziom] if self.poziom != 'wyzwanie' else self.baza_hasel['wyzwanie']
 
             self.reset_timer()
 
             for i, haslo in enumerate(hasla):
                 
-                nowagra.zapis(i)
+                nowagra.zapis(i, self.timer_now())
 
-                slowo = self.ask_question("Twoje hasło to: " + haslo+"\nZacznij pisać:")
+                slowo = self.ask_question("Twoje hasło to: " + haslo + "\nZacznij pisać:")
 
                 while slowo != haslo:
                     slowo = self.ask_question("Niepoprawne hasło. Spróbuj ponownie.\n"+"Twoje hasło to: " + haslo+"\nZacznij pisać:")
+            
 
-            #przykładowe użycie funkcji ask question:
-            #tekst = self.ask_question(self.wylosuj_haslo())
-            #print("\nwpisany tekst: " + tekst)
+            ostateczny_czas = self.timer_now()
 
             kontynuuj = ""
             os.system('cls')
