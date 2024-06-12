@@ -31,21 +31,20 @@ class Zapis_Gry:
         except:
             self.blad = 1
 
-    def zapis(self, poziom, czas, tryb, trudnosc) -> None:
+    def zapis(self, poziom, czas, trudnosc) -> None:
         self.f = open("zapis.txt", "w")
-        self.f.write(str(poziom) + "\n" + str(czas) + "\n" + str(tryb) + "\n" + str(trudnosc))
+        self.f.write(str(poziom) + "\n" + str(czas) + "\n" + str(trudnosc))
         self.f.close()
     
     def odczyt(self) -> str:
         self.f = open("zapis.txt", "r")
         poziom = int(self.f.readline())
         czas = float(self.f.readline())
-        tryb = self.f.readline()
         trudnosc = self.f.readline()
 
         self.f.close()
 
-        return poziom, czas, tryb, trudnosc
+        return poziom, czas, trudnosc
 
 
 class MistrzKlawiatury:
@@ -53,6 +52,7 @@ class MistrzKlawiatury:
         self.user_input = ""        #łańcuch znaków wpisanych przez uzytkownika
         self.key_pressed = None
         self.cleanInput = False     #czyszczenie wejscia, jesli uzywasz funkcji input() ta zmienna MUSI byc false
+        self.postep = 0
 
         self.baza_hasel = {
             'debug': ["jabłka", "orzechy"],  # tryb testowy
@@ -130,8 +130,8 @@ class MistrzKlawiatury:
         
    
 
-    def reset_timer(self):              #do resetowania timera :)
-        self.start_time = time.time()
+    def reset_timer(self, delta : int = 0):              #do resetowania timera :)
+        self.start_time = time.time() - delta
     
     def timer_now(self):
         return time.time() - self.start_time
@@ -144,6 +144,7 @@ class MistrzKlawiatury:
         """
         self.user_input = ""
         self.key_pressed = None         #potrzebne żeby przypadkiem nie wczytało entera z poprzedniej funkcji
+        sys.stdout.flush()
         os.system('cls')
         sys.stdout.write(question+"\n\n")
         
@@ -154,14 +155,13 @@ class MistrzKlawiatury:
             if self.key_pressed != None:
                 if len(self.key_pressed) == 1:
                     self.user_input += self.key_pressed
-                    self.key_pressed = None
+            self.key_pressed = None
 
             #wyswietlanie
-            sys.stdout.flush()
             
             sys.stdout.write("\033[0F\x1b[0K"+"Twój czas: {0:.1f}\n".format(self.timer_now())) #Bawienie się kursorem żeby nie było "mrugania"
             sys.stdout.write("\033[0K"+self.user_input)
-            
+            sys.stdout.flush()
             
 
             listener.join(REFRESH_RATE)
@@ -186,19 +186,24 @@ class MistrzKlawiatury:
                 os.system('cls')
                 wejscie = input("Wykryto niedokończoną grę, czy chcesz ją wczytać? (tak/nie)")
                 if wejscie == "tak":
-                    pass
+                    self.postep, delta, self.poziom = nowagra.odczyt()
+                    self.reset_timer(delta)
                 else:
                     self.wybierz_poziom()
+                    self.reset_timer()
+            else:
+                self.wybierz_poziom()
+                self.reset_timer()
 
             hasla = self.baza_hasel[self.poziom] if self.poziom != 'wyzwanie' else self.baza_hasel['wyzwanie']
 
-            self.reset_timer()
+            
             liczba_prob=0
-            for i, haslo in enumerate(hasla):
+            for i, haslo in enumerate(hasla[self.postep:]):
                 
                 
-                
-                nowagra.zapis(i, self.timer_now(), 0, 0)
+                os.system('cls')
+                nowagra.zapis(i, self.timer_now(), self.poziom)
 
                 slowo = self.ask_question("Twoje hasło to: " + haslo + "\nZacznij pisać:")
                 liczba_prob+=1
@@ -213,7 +218,7 @@ class MistrzKlawiatury:
             kontynuuj = ""
             os.system('cls')
 
-            nowagra.zapis(0, ostateczny_czas, "nie", "nie")
+            nowagra.zapis(0, ostateczny_czas, "wyzwanie") #ustawianie domyślnej wartości "na wszelki wypadek"
 
             while kontynuuj != "tak": 
                 print(f"Czas: {ostateczny_czas:.2f}")
