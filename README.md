@@ -21,3 +21,7 @@ Implementacja:
 - funkcja _graj_: podaje graczowi hasła i weryfikuje poprawność wpisanego przez gracza słowa
 - funkcja _statystyki_: zwraca liczbę podjętych oraz wygranych gier/prób
 ====================
+
+**Znane problemy:**
+**====================**
+- Aby zapis do pliku działał poprawnie wyłączenie antywirusa, w szczególności "automatycznej izolacji" może być konieczny 
